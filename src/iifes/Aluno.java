@@ -1,5 +1,9 @@
 package iifes;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class Aluno extends Usuario {
     /**
      * Classe com as rotinas do usuário aluno
@@ -8,10 +12,19 @@ public class Aluno extends Usuario {
     private double saldo;
 
     /**
+     * Contrutor da classe Aluno
+     * @param buff Objeto do arquivo que conterá os dados
+     * @throws IOException Erro ao ler conteúdo
+     */
+    public Aluno(BufferedReader buff) throws IOException {
+        super(buff);
+    }
+
+    /**
      * Construtor da classe Aluno
-     * @param cpf: CPF do usuário aluno
-     * @param nome: Nome do usuário aluno
-     * @param senha: Senha do usuário aluno
+     * @param cpf CPF do usuário aluno
+     * @param nome Nome do usuário aluno
+     * @param senha Senha do usuário aluno
      */
     public Aluno(String cpf, String nome, String senha) {
         super(cpf, nome, senha);
@@ -28,7 +41,7 @@ public class Aluno extends Usuario {
 
     /**
      * Desconta o valor da conta caso o usuário tenha crédito para isso
-     * @param valor: Valor a ser retirado da conta
+     * @param valor Valor a ser retirado da conta
      * @return True: valor retirado. False: valor não retirado
      */
     public boolean retirarSaldo(double valor) {
@@ -54,5 +67,14 @@ public class Aluno extends Usuario {
      */
     public double getSaldo() {
         return saldo;
+    }
+
+    /**
+     * Salva os dados do Aluno no arquivo buff
+     * @param buff Objeto do arquivo que conterá os dados
+     */
+    public void salvar(BufferedWriter buff) throws IOException {
+        buff.write("ALU\n");
+        super.salvar(buff);
     }
 }

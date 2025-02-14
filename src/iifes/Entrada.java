@@ -1,10 +1,7 @@
 package iifes;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Entrada {
     /**
@@ -13,6 +10,7 @@ public class Entrada {
      */
 
     public Scanner input;
+    private Boolean first = true;
 
     /**
      * Construtor da classe Entrada
@@ -38,11 +36,26 @@ public class Entrada {
      */
     public String lerLinha(String msg) {
         // Imprime uma mensagem ao usuário, lê uma e retorna esta linha
-        System.out.print(msg);
-        String linha = this.input.nextLine();
+        boolean continua = true;
 
-        // Ignora linhas começando com #, que vão indicar comentários no arquivo de entrada
-        while (linha.charAt(0) == '#') linha = this.input.nextLine();
+        String linha = "";
+
+        while (continua) {
+            try {
+                System.out.print(msg);
+
+                linha = this.input.nextLine();
+
+                // Ignora linhas começando com #, que vão indicar comentários no arquivo de entrada
+                while (linha.charAt(0) == '#') linha = this.input.nextLine();
+
+                continua = false;
+
+            } catch (NoSuchElementException | IllegalStateException | StringIndexOutOfBoundsException e) {
+                System.out.print("ERRO! Algo deu errado ao ler a linha.\n");
+            }
+        }
+
         return linha;
     }
 
@@ -53,8 +66,22 @@ public class Entrada {
      */
     public int lerInteiro(String msg) {
         // Imprime uma mensagem ao usuário, lê uma linha contendo um inteiro e retorna este inteiro
-        String linha = this.lerLinha(msg);
-        return Integer.parseInt(linha);
+        boolean continua = true;
+
+        int result = -1;
+        while (continua) {
+            try {
+                String linha = this.lerLinha(msg);
+
+                result = Integer.parseInt(linha);
+                continua = false;
+
+            } catch (NumberFormatException e) {
+                System.out.print("ERRO! Número inválido.\n");
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -64,8 +91,22 @@ public class Entrada {
      */
     public double lerDouble(String msg) {
         // Imprime uma mensagem ao usuário, lê uma linha contendo um ponto flutuante e retorna este número
-        String linha = this.lerLinha(msg);
-        return Double.parseDouble(linha);
+        boolean continua = true;
+
+        double result = -1.00;
+        while (continua) {
+            try {
+                String linha = this.lerLinha(msg);
+                result = Double.parseDouble(linha);
+                continua = false;
+
+            } catch (NullPointerException | NumberFormatException e) {
+                System.out.print("ERRO! Número inválido.\n");
+
+            }
+        }
+
+        return result;
     }
 
     /*********************/
@@ -77,6 +118,12 @@ public class Entrada {
      * @param s Objeto da classe Sistema
      */
     public void menu(Sistema s) {
+        if (this.first) {
+            this.carregarDados(s);
+
+            this.first = false;
+        }
+
         if (s.sistemaVazio()) {
             System.out.print("** Inicializando o sistema **\n");
             this.cadAdmin(s);
@@ -99,6 +146,8 @@ public class Entrada {
 
             op = this.lerInteiro(msg);
         }
+
+        this.salvarDados(s);
     }
 
     /**
@@ -215,6 +264,8 @@ public class Entrada {
         s.addAdmin(a);
 
         System.out.print("Usuário " + a + " criado com sucesso.\n");
+
+        this.menu(s, a);
     }
 
     /**
@@ -308,6 +359,8 @@ public class Entrada {
             op = this.lerInteiro(msg);
         }
 
+        Collections.sort(itens);
+
         if (!itens.isEmpty()) {
             Pedido p = new Pedido(s.gerarCodigoPedido(), a, null, sla, itens);
 
@@ -319,7 +372,6 @@ public class Entrada {
                 System.out.print("Pedido não pode ser realizado. Saldo insuficiente.\n");
             }
         }
-
     }
 
     /**
@@ -413,5 +465,47 @@ public class Entrada {
         double valor = this.lerDouble("Digite o valor a ser adicionado no saldo: ");
 
         a.inserirSaldo(valor);
+    }
+
+    /***********************/
+    /** LEITURA E ESCRITA **/
+    /**      DE DADOS     **/
+    /***********************/
+
+    /**
+     * Salva os dados do Sistema no arquivo dados.txt
+     * @param s Objeto da classe Sitema
+     */
+    public void salvarDados(Sistema s) {
+        try {
+            FileWriter file = new FileWriter("dados.txt");
+            BufferedWriter buff = new BufferedWriter(file);
+
+            s.salvar(buff);
+
+            buff.close();
+        } catch (IOException e) {
+            System.out.print("ERRO! Falha ao salvar arquivo.\n");
+        }
+    }
+
+    /**
+     * Carrega os dados do arquivo dados.txt no Sistema dado
+     * @param s Objeto da classe Sistema
+     */
+    public void carregarDados(Sistema s) {
+        try {
+            FileReader file = new FileReader("dados.txt");
+            BufferedReader buff = new BufferedReader(file);
+
+            s.carregar(buff);
+
+            buff.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.print("Arquivo não encontrado.\n\n");
+        } catch (IOException e) {
+            System.out.print("ERRO! Falha ao ler o arquivo.\n");
+        }
     }
 }

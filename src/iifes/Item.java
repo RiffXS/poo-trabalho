@@ -1,6 +1,6 @@
 package iifes;
 
-public class Item {
+public class Item implements Comparable<Item> {
     /**
      * Classe com as rotinas do item
      */
@@ -23,7 +23,7 @@ public class Item {
      * @return String com os dados da classe
      */
     public String toString() {
-        return this.p + "(QTD: " + this.qtd + ")";
+        return this.p + " (QTD: " + this.qtd + ")";
     }
 
     /**
@@ -48,5 +48,17 @@ public class Item {
      */
     public int getQtd() {
         return this.qtd;
+    }
+
+    /**
+     * Define o atributo a ser comparado para ordenar
+     * ArrayList com elementos da classe Item
+     * @param comparesTo the object to be compared.
+     * @return Um número inteiro
+     */
+    @Override public int compareTo(Item comparesTo) {
+        int compareQtd = comparesTo.getQtd();
+
+        return compareQtd - this.qtd;
     }
 }

@@ -1,18 +1,35 @@
 package iifes;
 
-public class Usuario {
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public abstract class Usuario implements Salvavel {
     /**
      * Classe com as rotinas do usuário
      */
 
     protected String cpf, nome;
     private String senha;
+    /**
+     * Contrutor da classe Usuario
+     */
+    public Usuario() {}
+
+    /**
+     * Contrutor da classe Usuario
+     * @param buff Objeto do arquivo que conterá os dados
+     * @throws IOException Erro ao ler conteúdo
+     */
+    public Usuario(BufferedReader buff) throws IOException {
+        this.carregar(buff);
+    }
 
     /**
      * Construtor da classe Usuario
-     * @param cpf: CPF do usuário
-     * @param nome: Nome do usuário
-     * @param senha: Senha do usuário
+     * @param cpf CPF do usuário
+     * @param nome Nome do usuário
+     * @param senha Senha do usuário
      */
     public Usuario(String cpf, String nome, String senha) {
         this.cpf = cpf;
@@ -22,7 +39,7 @@ public class Usuario {
 
     /**
      * Valida o acesso do usuário
-     * @param pwd: Senha de Entrada
+     * @param pwd Senha de Entrada
      * @return True: senha correta. False: senha incorreta
      */
     public boolean validarAcesso(String pwd) {
@@ -58,5 +75,25 @@ public class Usuario {
      */
     public String getCpf() {
         return cpf;
+    }
+
+    /**
+     * Salva os dados do Usuario no arquivo buff
+     * @param buff Objeto do arquivo que conterá os dados
+     */
+    public void salvar(BufferedWriter buff) throws IOException {
+        buff.write(this.cpf + '\n');
+        buff.write(this.nome + '\n');
+        buff.write(this.senha + '\n');
+    }
+
+    /**
+     * Carrega os dados do arquivo buff
+     * @param buff Objeto do arquivo que conterá os dados
+     */
+    public void carregar(BufferedReader buff) throws IOException{
+        this.cpf   = buff.readLine();
+        this.nome  = buff.readLine();
+        this.senha = buff.readLine();
     }
 }

@@ -2,7 +2,7 @@ package iifes;
 
 import java.util.ArrayList;
 
-public class Pedido {
+public class Pedido implements Comparable<Pedido> {
     /**
      * Classe com as rotinas do pedido
      */
@@ -115,5 +115,16 @@ public class Pedido {
      */
     public Aluno getCliente() {
         return cliente;
+    }
+
+    @Override public int compareTo(Pedido comparesTo) {
+        int compareSize = comparesTo.carrinho.size();
+
+        int size = this.carrinho.size();
+        if (size != compareSize) {
+            return compareSize - size;
+        }
+
+        return (int) Math.ceil(comparesTo.valorTotal() - this.valorTotal());
     }
 }

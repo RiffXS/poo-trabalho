@@ -1,18 +1,21 @@
 package iifes;
 
-import java.sql.Array;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class Sistema {
+public class Sistema implements Salvavel {
     /**
      * Classe com as rotinas do sistema
      */
 
-    ArrayList<Sala> salas;
-    ArrayList<Admin> adms;
-    ArrayList<Aluno> alunos;
-    ArrayList<Pedido> pedidos;
-    ArrayList<Produto> prods;
+    private ArrayList<Sala>    salas;
+    private ArrayList<Admin>   adms;
+    private ArrayList<Aluno>   alunos;
+    private ArrayList<Pedido>  pedidos;
+    private ArrayList<Produto> prods;
 
     /**
      * Construtor da classe Sistema
@@ -204,6 +207,7 @@ public class Sistema {
             }
         }
 
+        Collections.sort(pdidos);
         return pdidos;
     }
 
@@ -221,6 +225,50 @@ public class Sistema {
             }
         }
 
+        Collections.sort(pdidos);
         return pdidos;
+    }
+
+    /********************/
+    /** SALVANDO DADOS **/
+    /********************/
+
+    /**
+     * Salva os dados do Sistema no arquivo buff
+     * @param buff Objeto do arquivo que conterá os dados
+     */
+    public void salvar(BufferedWriter buff) throws IOException {
+        for (Admin a : this.adms) {
+            a.salvar(buff);
+        }
+
+        for (Aluno a : this.alunos) {
+            a.salvar(buff);
+        }
+
+        buff.write("FIM");
+    }
+
+    /**
+     * Carrega os dados do arquivo buff
+     * @param buff Objeto do arquivo que conterá os dados
+     */
+    public void carregar(BufferedReader buff) throws IOException {
+        String linha = buff.readLine();
+
+        if (!linha.isBlank()) {
+            while (!linha.equals("FIM")) {
+                if (linha.equals("ADM")) {
+                    Admin a = new Admin(buff);
+                    this.addAdmin(a);
+
+                } else if (linha.equals("ALU")) {
+                    Aluno a = new Aluno(buff);
+                    this.addAluno(a);
+                }
+
+                linha = buff.readLine();
+            }
+        }
     }
 }
