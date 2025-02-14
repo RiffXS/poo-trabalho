@@ -202,7 +202,11 @@ public class Entrada {
         int op = this.lerInteiro(msg);
 
         while (op != 0) {
-            if (op == 1) fazerPedido(s, a);
+            if (op == 1) {
+                if (s.listaSalaVazia()) System.out.print("Nenhuma sala cadastrada. Incapaz de realizar pedido.\n");
+                else if (s.listaProdutoVazia()) System.out.print("Nenhum produto cadastrado. Incapaz de realizar pedido.\n");
+                else fazerPedido(s, a);
+            }
             if (op == 2) entregarPedido(s, a);
             if (op == 3) listarPedidos(s, a);
             if (op == 4) inserirCredito(s, a);

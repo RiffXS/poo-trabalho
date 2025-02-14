@@ -160,6 +160,22 @@ public class Sistema implements Salvavel {
     }
 
     /**
+     * Verifica se nenhuma sala foi cadastrada
+     * @return True: nenhuma Sala cadastrado. False: Pelo menos uma Sala cadastrado
+     */
+    public boolean listaSalaVazia() {
+        return this.salas.isEmpty();
+    }
+
+    /**
+     * Verifica se nenhum produto foi cadastrada
+     * @return True: nenhum Produto cadastrado. False: Pelo menos um Produto cadastrado
+     */
+    public boolean listaProdutoVazia() {
+        return this.prods.isEmpty();
+    }
+
+    /**
      * Gera o código do próximo Produto
      * @return String do código
      */
